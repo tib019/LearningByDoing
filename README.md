@@ -1,4 +1,39 @@
-# Learning by Doing – Exam Prep System
+# 📚 Learning by Doing – Interaktives Exam Prep System
+
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+
+Ein interaktives, ADHS-freundliches Lernsystem für die Prüfungsvorbereitung in der Fachinformatiker-Ausbildung. Alle Module bieten sofortiges Feedback, interaktive Playgrounds und prüfungsrelevante Aufgaben.
+
+---
+
+## 📋 Projektübersicht
+
+| Eigenschaft | Details |
+|---|---|
+| **Typ** | Interaktives Lernsystem / Exam Prep |
+| **Zielgruppe** | Auszubildende Fachinformatiker, Entwickler |
+| **Philosophie** | Learning by Doing – Lernen durch direktes Ausprobieren |
+| **Besonderheit** | ADHS-freundlich, barrierefrei, sofortiges Feedback |
+
+---
+
+## 🚀 Unterstützte Sprachen und Technologien
+
+| Modul | Typ | Beschreibung |
+|---|---|---|
+| **HTML/CSS/JS** | Browser-Playground | Live-Editor mit sofortigem Feedback |
+| **Python** | Browser + Terminal | Brython-Playground und Terminal-Modul |
+| **TypeScript** | Browser-Playground | Live-Transpilierung und Ausführung |
+| **React** | Browser-Playground | JSX/React live mit Babel |
+| **Java** | Editor-Playground | Syntax-Check und Online-Compiler-Link |
+| **SQL** | Browser-Playground | sql.js Mini-Datenbank im Browser |
+| **Tailwind CSS** | Browser-Beispiele | Utility-Klassen interaktiv erkunden |
+
+---
 
 > **Hinweis zum Start für alle Module:**
 > - **HTML, CSS, JavaScript:**
@@ -166,4 +201,16 @@ Die Aufgaben-Check- und Feedback-Logik ist jetzt als zentrales Modul (`playgroun
 ## Ausblick: Java im Browser & Modularisierung
 
 - Die Ausführung von Java-Code im Browser (z.B. mit TeaVM) ist in Planung, um ein noch immersiveres Lernerlebnis zu bieten.
-- Die Playground-Logik wird weiter modularisiert (z.B. als npm-Paket), um Wiederverwendbarkeit und Wartbarkeit zu erhöhen. 
+- Die Playground-Logik wird weiter modularisiert (z.B. als npm-Paket), um Wiederverwendbarkeit und Wartbarkeit zu erhöhen.
+
+---
+
+## 👨‍💻 Autor
+
+**Tobias** – [@tib019](https://github.com/tib019)
+
+---
+
+## 📄 Lizenz
+
+Dieses Projekt ist für Lern- und Prüfungsvorbereitungszwecke erstellt.
