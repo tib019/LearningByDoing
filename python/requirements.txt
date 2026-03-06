@@ -2,48 +2,48 @@
 # Essential packages for learning Python development
 
 # Core packages
-requests==2.31.0
-beautifulsoup4==4.12.2
-pandas==2.0.3
-numpy==1.24.3
+requests>=2.32.4
+beautifulsoup4>=4.12.2
+pandas>=2.0.3
+numpy>=1.24.3
 
 # Web development
-flask==2.3.2
-django==4.2.4
+flask>=3.1.3
+django>=4.2.20
 
 # Data visualization
-matplotlib==3.7.2
-seaborn==0.12.2
-plotly==5.15.0
+matplotlib>=3.7.2
+seaborn>=0.12.2
+plotly>=5.15.0
 
 # Testing
-pytest==7.4.0
-pytest-cov==4.1.0
+pytest>=7.4.0
+pytest-cov>=4.1.0
 
 # Code quality
-black==23.7.0
-flake8==6.0.0
-pylint==2.17.5
+black>=24.3.0
+flake8>=6.0.0
+pylint>=2.17.5
 
 # Jupyter notebooks for interactive learning
-jupyter==1.0.0
-ipykernel==6.25.0
+jupyter>=1.0.0
+ipykernel>=6.25.0
 
 # Environment management
-python-dotenv==1.0.0
+python-dotenv>=1.0.0
 
 # Database
-sqlite3  # Built-in with Python
-sqlalchemy==2.0.19
+sqlalchemy>=2.0.19
 
 # API development
-fastapi==0.100.1
-uvicorn==0.23.2
+fastapi>=0.115.0
+uvicorn>=0.34.0
+starlette>=0.47.2
 
 # File handling
-openpyxl==3.1.2
-python-docx==0.8.11
+openpyxl>=3.1.2
+python-docx>=0.8.11
 
 # Utilities
-click==8.1.7
-rich==13.4.2 
+click>=8.1.7
+rich>=13.4.2
