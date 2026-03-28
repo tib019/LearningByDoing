@@ -373,10 +373,10 @@ print(f"Person: {person}")
         self.current_module = module_id
         module = self.modules[module_id]
         
-        print(f"\n🎯 Modul gestartet: {module.title}")
-        print(f"📝 Beschreibung: {module.description}")
-        print(f"📊 Schwierigkeit: {module.difficulty.value}")
-        print(f"📚 Kategorie: {module.category.value}")
+ print(f"\n Modul gestartet: {module.title}")
+ print(f" Beschreibung: {module.description}")
+ print(f" Schwierigkeit: {module.difficulty.value}")
+ print(f" Kategorie: {module.category.value}")
         print("\n" + "="*50)
         
         return True
@@ -385,15 +385,15 @@ print(f"Person: {person}")
         """Zeigt den Inhalt eines Moduls an"""
         module = self.get_module(module_id)
         if not module:
-            print(f"❌ Modul {module_id} nicht gefunden")
+ print(f" Modul {module_id} nicht gefunden")
             return
         
-        print(f"\n📖 {module.title}")
+ print(f"\n {module.title}")
         print("="*50)
         print(module.content)
         
         if module.examples:
-            print(f"\n💡 Beispiele ({len(module.examples)}):")
+ print(f"\n Beispiele ({len(module.examples)}):")
             for example in module.examples:
                 print(f"  - {example}")
     
@@ -414,16 +414,16 @@ print(f"Person: {person}")
         
         exercise = self.exercises[exercise_id]
         
-        print(f"\n🏋️ Übung: {exercise.title}")
-        print(f"📝 {exercise.description}")
-        print(f"📊 Schwierigkeit: {exercise.difficulty.value}")
-        print(f"⭐ Punkte: {exercise.points}")
+ print(f"\n️ Übung: {exercise.title}")
+ print(f" {exercise.description}")
+ print(f" Schwierigkeit: {exercise.difficulty.value}")
+ print(f" Punkte: {exercise.points}")
         print("\n" + "="*50)
-        print("📝 Code Template:")
+ print(" Code Template:")
         print(exercise.code_template)
         
         if exercise.hints:
-            print(f"\n💡 Hinweise ({len(exercise.hints)}):")
+ print(f"\n Hinweise ({len(exercise.hints)}):")
             for i, hint in enumerate(exercise.hints, 1):
                 print(f"  {i}. {hint}")
         
@@ -500,18 +500,18 @@ print(f"Person: {person}")
         """Zeigt den aktuellen Fortschritt an"""
         progress = self.get_progress_summary()
         
-        print("\n📊 Lernfortschritt")
+ print("\n Lernfortschritt")
         print("="*50)
-        print(f"📚 Module: {progress['completed_modules']}/{progress['total_modules']} ({progress['module_progress']}%)")
-        print(f"🏋️ Übungen: {progress['completed_exercises']}/{progress['total_exercises']} ({progress['exercise_progress']}%)")
-        print(f"⭐ Gesamtpunkte: {progress['total_points']}")
+ print(f" Module: {progress['completed_modules']}/{progress['total_modules']} ({progress['module_progress']}%)")
+ print(f"️ Übungen: {progress['completed_exercises']}/{progress['total_exercises']} ({progress['exercise_progress']}%)")
+ print(f" Gesamtpunkte: {progress['total_points']}")
         print(f"⏱️ Session-Dauer: {progress['session_duration']}")
         
         # Fortschrittsbalken
-        print(f"\n📚 Module-Fortschritt:")
+ print(f"\n Module-Fortschritt:")
         self._display_progress_bar(progress['module_progress'])
         
-        print(f"\n🏋️ Übungs-Fortschritt:")
+ print(f"\n️ Übungs-Fortschritt:")
         self._display_progress_bar(progress['exercise_progress'])
     
     def _display_progress_bar(self, percentage: float) -> None:
@@ -524,14 +524,14 @@ print(f"Person: {person}")
     @contextmanager
     def interactive_session(self):
         """Context Manager für interaktive Lernsession"""
-        print("🚀 Python Learning Environment gestartet!")
+ print(" Python Learning Environment gestartet!")
         print("="*50)
         
         try:
             yield self
         finally:
             self.save_progress()
-            print("\n👋 Session beendet. Fortschritt gespeichert!")
+ print("\n Session beendet. Fortschritt gespeichert!")
     
     async def run_async_example(self, delay: float = 1.0) -> str:
         """Beispiel für asynchrone Programmierung"""
@@ -544,7 +544,7 @@ def main():
     
     with env.interactive_session():
         # Zeige verfügbare Module
-        print("\n📚 Verfügbare Lernmodule:")
+ print("\n Verfügbare Lernmodule:")
         for module in env.get_available_modules():
             print(f"  - {module.id}: {module.title} ({module.difficulty.value})")
         

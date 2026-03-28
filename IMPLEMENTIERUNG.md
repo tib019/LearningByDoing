@@ -71,7 +71,7 @@ Screenshots der Playgrounds können im Ordner `docs/screenshots/` abgelegt und i
 > ![SQL Playground Screenshot](./docs/screenshots/sql-playground.png)
 
 Die Playgrounds bieten:
-- Sofortiges, motivierendes Feedback (z.B. "✅ Richtig! Super gemacht!" oder "❌ Noch nicht ganz richtig. Tipp: Lies die Info-Box!")
+- Sofortiges, motivierendes Feedback (z.B. " Richtig! Super gemacht!" oder " Noch nicht ganz richtig. Tipp: Lies die Info-Box!")
 - Barrierefreiheit durch hohe Kontraste, Fokus-Indikatoren, ARIA-Labels, Tastaturbedienung und responsives Layout
 
 ## Ausblick: Java im Browser & Modularisierung

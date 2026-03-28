@@ -1,4 +1,4 @@
-# 📚 Learning by Doing – Interaktives Exam Prep System
+# Learning by Doing – Interaktives Exam Prep System
 
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
@@ -10,7 +10,7 @@ Ein interaktives, ADHS-freundliches Lernsystem für die Prüfungsvorbereitung in
 
 ---
 
-## 📋 Projektübersicht
+## Projektübersicht
 
 | Eigenschaft | Details |
 |---|---|
@@ -21,7 +21,7 @@ Ein interaktives, ADHS-freundliches Lernsystem für die Prüfungsvorbereitung in
 
 ---
 
-## 🚀 Unterstützte Sprachen und Technologien
+## Unterstützte Sprachen und Technologien
 
 | Modul | Typ | Beschreibung |
 |---|---|---|
@@ -155,7 +155,7 @@ Um einen Eindruck der Playgrounds zu vermitteln, können Screenshots in diesen A
 > ![TypeScript Playground Screenshot](./docs/screenshots/typescript-playground.png)
 
 Die Playgrounds bieten:
-- Sofortiges, motivierendes Feedback (z.B. "✅ Richtig! Super gemacht!" oder "❌ Noch nicht ganz richtig. Tipp: Lies die Info-Box!")
+- Sofortiges, motivierendes Feedback (z.B. " Richtig! Super gemacht!" oder " Noch nicht ganz richtig. Tipp: Lies die Info-Box!")
 - Barrierefreiheit durch hohe Kontraste, Fokus-Indikatoren, ARIA-Labels, Tastaturbedienung und responsives Layout
 
 ## Barrierefreiheit & Design
@@ -185,8 +185,8 @@ Die Playgrounds sind so gestaltet, dass sie möglichst barrierearm und ADHS-freu
 ## Automatisierte Playground-Validierung
 
 Jeder Playground prüft die eingegebenen Lösungen automatisch und gibt direkt Feedback:
-- ✅ Richtig: Aufgabe korrekt gelöst, motivierende Rückmeldung
-- ❌ Noch nicht ganz richtig: Hinweise und Tipps aus der Info-Box
+- Richtig: Aufgabe korrekt gelöst, motivierende Rückmeldung
+- Noch nicht ganz richtig: Hinweise und Tipps aus der Info-Box
 - Fehler im Code werden farblich hervorgehoben
 - Lösungen können auf Wunsch angezeigt werden
 - Fortschritt wird angezeigt
@@ -205,12 +205,12 @@ Die Aufgaben-Check- und Feedback-Logik ist jetzt als zentrales Modul (`playgroun
 
 ---
 
-## 👨‍💻 Autor
+## ‍ Autor
 
 **Tobias** – [@tib019](https://github.com/tib019)
 
 ---
 
-## 📄 Lizenz
+## Lizenz
 
 Dieses Projekt ist für Lern- und Prüfungsvorbereitungszwecke erstellt.
