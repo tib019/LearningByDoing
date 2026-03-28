@@ -419,7 +419,7 @@ print(f"Person: {person}")
  print(f" Schwierigkeit: {exercise.difficulty.value}")
  print(f" Punkte: {exercise.points}")
         print("\n" + "="*50)
- print(" Code Template:")
+ print("Code Template:")
         print(exercise.code_template)
         
         if exercise.hints:
@@ -524,7 +524,7 @@ print(f"Person: {person}")
     @contextmanager
     def interactive_session(self):
         """Context Manager für interaktive Lernsession"""
- print(" Python Learning Environment gestartet!")
+ print("Python Learning Environment gestartet!")
         print("="*50)
         
         try:
