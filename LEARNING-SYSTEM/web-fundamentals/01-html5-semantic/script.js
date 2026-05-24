@@ -417,7 +417,7 @@ class HTML5LearningApp {
         const totalQuestionsSpan = document.getElementById('total-questions');
         const progressFill = document.getElementById('progress-fill');
         
-        if (questionText) questionText.innerHTML = question.question;
+        if (questionText) questionText.textContent = question.question;
         if (currentQuestionSpan) currentQuestionSpan.textContent = this.currentQuestion + 1;
         if (totalQuestionsSpan) totalQuestionsSpan.textContent = this.quizData.length;
         if (progressFill) {

@@ -6,6 +6,7 @@ Ein immersives Lernsystem für Python Grundlagen und moderne Konzepte
 
 import sys
 import os
+import ast
 from typing import Any, List, Dict, Optional, Union
 from dataclasses import dataclass, field
 from enum import Enum
@@ -74,6 +75,42 @@ class LearningModule:
     examples: List[str] = field(default_factory=list)
     exercises: List[Exercise] = field(default_factory=list)
     prerequisites: List[str] = field(default_factory=list)
+
+def _safe_exec(user_code: str, local_vars: dict) -> None:
+    """Execute user code in a restricted sandbox."""
+    # Block dangerous patterns before execution
+    dangerous_patterns = [
+        '__import__', '__class__', '__mro__', '__subclasses__',
+        '__builtins__', 'import ', 'open(', 'exec(', 'eval(',
+        'compile(', 'globals(', 'locals(', 'vars(',
+        'getattr', 'setattr', 'delattr', 'hasattr',
+        'input(', 'print(', 'os.', 'sys.', 'subprocess'
+    ]
+    code_lower = user_code.lower()
+    for pattern in dangerous_patterns:
+        if pattern in code_lower or pattern in user_code:
+            raise ValueError(f"Nicht erlaubter Code-Ausdruck: {pattern}")
+
+    # Also validate with AST
+    try:
+        tree = ast.parse(user_code)
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.Import, ast.ImportFrom)):
+                raise ValueError("Import-Anweisungen sind nicht erlaubt")
+    except SyntaxError as e:
+        raise ValueError(f"Syntaxfehler im Code: {e}")
+
+    safe_builtins = {
+        'len': len, 'range': range, 'print': print,
+        'int': int, 'float': float, 'str': str, 'bool': bool,
+        'list': list, 'dict': dict, 'tuple': tuple, 'set': set,
+        'abs': abs, 'max': max, 'min': min, 'sum': sum,
+        'sorted': sorted, 'reversed': reversed, 'enumerate': enumerate,
+        'zip': zip, 'map': map, 'filter': filter,
+        'round': round, 'type': type, 'isinstance': isinstance,
+    }
+    exec(user_code, {"__builtins__": safe_builtins}, local_vars)
+
 
 class PythonLearningEnvironment:
     """
@@ -439,7 +476,7 @@ print(f"Person: {person}")
         try:
             # Sichere Ausführung des Codes
             local_vars = {}
-            exec(user_code, {"__builtins__": {}}, local_vars)
+            _safe_exec(user_code, local_vars)
             
             # Teste die Testfälle
             passed_tests = 0
