@@ -1,6 +1,6 @@
 {
   "name": "react-learning-project",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "React Learning by Doing - Ein umfassendes Lernprojekt f\u00fcr React Grundlagen",
   "main": "index.js",
   "scripts": {

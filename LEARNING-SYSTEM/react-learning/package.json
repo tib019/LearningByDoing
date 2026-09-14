@@ -1,6 +1,6 @@
 {
   "name": "react-learning-system",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Modern React Learning Environment with TypeScript, Hooks, and Best Practices",
   "type": "module",
   "scripts": {
