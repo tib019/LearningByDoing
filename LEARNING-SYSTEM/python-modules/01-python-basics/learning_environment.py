@@ -4,6 +4,9 @@ Python Learning Environment - Modern Python 3.11+ Features
 Ein immersives Lernsystem für Python Grundlagen und moderne Konzepte
 """
 
+import ast
+import subprocess
+import tempfile
 import sys
 import os
 from typing import Any, List, Dict, Optional, Union
@@ -373,10 +376,10 @@ print(f"Person: {person}")
         self.current_module = module_id
         module = self.modules[module_id]
         
- print(f"\n Modul gestartet: {module.title}")
- print(f" Beschreibung: {module.description}")
- print(f" Schwierigkeit: {module.difficulty.value}")
- print(f" Kategorie: {module.category.value}")
+        print(f"\n Modul gestartet: {module.title}")
+        print(f" Beschreibung: {module.description}")
+        print(f" Schwierigkeit: {module.difficulty.value}")
+        print(f" Kategorie: {module.category.value}")
         print("\n" + "="*50)
         
         return True
@@ -385,15 +388,15 @@ print(f"Person: {person}")
         """Zeigt den Inhalt eines Moduls an"""
         module = self.get_module(module_id)
         if not module:
- print(f" Modul {module_id} nicht gefunden")
+            print(f" Modul {module_id} nicht gefunden")
             return
         
- print(f"\n {module.title}")
+            print(f"\n {module.title}")
         print("="*50)
         print(module.content)
         
         if module.examples:
- print(f"\n Beispiele ({len(module.examples)}):")
+            print(f"\n Beispiele ({len(module.examples)}):")
             for example in module.examples:
                 print(f"  - {example}")
     
@@ -414,64 +417,168 @@ print(f"Person: {person}")
         
         exercise = self.exercises[exercise_id]
         
- print(f"\n️ Übung: {exercise.title}")
- print(f" {exercise.description}")
- print(f" Schwierigkeit: {exercise.difficulty.value}")
- print(f" Punkte: {exercise.points}")
+        print(f"\n️ Übung: {exercise.title}")
+        print(f" {exercise.description}")
+        print(f" Schwierigkeit: {exercise.difficulty.value}")
+        print(f" Punkte: {exercise.points}")
         print("\n" + "="*50)
- print("Code Template:")
+        print("Code Template:")
         print(exercise.code_template)
         
         if exercise.hints:
- print(f"\n Hinweise ({len(exercise.hints)}):")
+            print(f"\n Hinweise ({len(exercise.hints)}):")
             for i, hint in enumerate(exercise.hints, 1):
                 print(f"  {i}. {hint}")
         
         return True
     
+    # Zeitlimit fuer die Ausfuehrung eingereichten Lerncodes.
+    AUSFUEHRUNGS_TIMEOUT_SEKUNDEN = 5
+
+    @staticmethod
+    def _ziel_name(quelltext: str) -> Optional[str]:
+        """Name der ersten Funktion oder Klasse, die der Quelltext definiert."""
+        try:
+            baum = ast.parse(quelltext)
+        except SyntaxError:
+            return None
+        for knoten in baum.body:
+            if isinstance(knoten, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                return knoten.name
+        return None
+
     def check_exercise_solution(self, exercise_id: str, user_code: str) -> Dict[str, Any]:
-        """Überprüft die Lösung einer Übungsaufgabe"""
+        """Überprüft die Lösung einer Übungsaufgabe.
+
+        Der eingereichte Code läuft in einem eigenen Prozess mit Zeitlimit.
+        Das schützt vor Endlosschleifen und Abstürzen — es ist ausdrücklich
+        KEINE Sicherheitsgrenze gegen bösartigen Code. Die Vorgängerfassung
+        behauptete mit `exec(user_code, {"__builtins__": {}})` genau das; diese
+        Konstruktion lässt sich in einer Zeile verlassen und nahm dem Lerncode
+        gleichzeitig print, len und range, sodass normale Lösungen gar nicht
+        laufen konnten. Wird dieses Modul je hinter eine Weboberfläche gehängt,
+        muss echte Isolation her (Container, seccomp, getrennter Nutzer).
+        """
         if exercise_id not in self.exercises:
             return {"success": False, "error": "Übung nicht gefunden"}
-        
+
         exercise = self.exercises[exercise_id]
-        
-        try:
-            # Sichere Ausführung des Codes
-            local_vars = {}
-            exec(user_code, {"__builtins__": {}}, local_vars)
-            
-            # Teste die Testfälle
-            passed_tests = 0
-            total_tests = len(exercise.test_cases)
-            
-            for test_case in exercise.test_cases:
-                # Hier würde die eigentliche Testlogik stehen
-                # Für dieses Beispiel nehmen wir an, dass alle Tests bestanden werden
-                passed_tests += 1
-            
-            success = passed_tests == total_tests
-            
-            if success:
-                # Markiere Übung als abgeschlossen
-                if exercise_id not in self.user_progress["completed_exercises"]:
-                    self.user_progress["completed_exercises"].append(exercise_id)
-                    self.user_progress["total_points"] += exercise.points
-                    self.save_progress()
-            
-            return {
-                "success": success,
-                "passed_tests": passed_tests,
-                "total_tests": total_tests,
-                "points_earned": exercise.points if success else 0,
-                "feedback": f"✅ {passed_tests}/{total_tests} Tests bestanden!" if success else f"❌ {passed_tests}/{total_tests} Tests bestanden"
-            }
-            
-        except Exception as e:
-            return {
-                "success": False,
-                "error": f"Fehler beim Ausführen des Codes: {str(e)}"
-            }
+        ziel = self._ziel_name(exercise.solution) or self._ziel_name(user_code)
+
+        if not exercise.test_cases:
+            return {"success": False, "error": "Für diese Übung sind keine Testfälle hinterlegt"}
+        if not ziel:
+            return {"success": False, "error": "Im Code ist keine Funktion oder Klasse definiert"}
+
+        ergebnis = self._fuehre_testfaelle_aus(user_code, ziel, exercise.test_cases)
+        if "error" in ergebnis:
+            return {"success": False, "error": ergebnis["error"]}
+
+        bestanden = ergebnis["passed"]
+        gesamt = len(exercise.test_cases)
+        success = bestanden == gesamt
+
+        if success and exercise_id not in self.user_progress["completed_exercises"]:
+            self.user_progress["completed_exercises"].append(exercise_id)
+            self.user_progress["total_points"] += exercise.points
+            self.save_progress()
+
+        return {
+            "success": success,
+            "passed_tests": bestanden,
+            "total_tests": gesamt,
+            "points_earned": exercise.points if success else 0,
+            "failures": ergebnis["failures"],
+            "feedback": (
+                f"✅ {bestanden}/{gesamt} Tests bestanden!"
+                if success
+                else f"❌ {bestanden}/{gesamt} Tests bestanden"
+            ),
+        }
+
+    # Markiert die Ergebniszeile, damit print-Ausgaben des Lerncodes sie nicht stören.
+    _ERGEBNIS_MARKER = "@@LERNUMGEBUNG-ERGEBNIS@@"
+
+    def _fuehre_testfaelle_aus(
+        self, user_code: str, ziel: str, test_cases: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """Führe den Code in einem eigenen Prozess aus und werte die Testfälle aus."""
+        harness = f"""
+import json, sys
+
+{user_code}
+
+_faelle = json.loads(sys.argv[1])
+_ziel = {ziel!r}
+_ergebnisse = []
+_kandidat = globals().get(_ziel)
+
+if _kandidat is None:
+    print({self._ERGEBNIS_MARKER!r} + json.dumps(
+        {{"error": "Erwartet wurde eine Definition namens '" + _ziel + "'."}}
+    ))
+    sys.exit(0)
+
+for _fall in _faelle:
+    _args = tuple(_fall.get("input", ()))
+    try:
+        _wert = _kandidat(*_args)
+    except Exception as _exc:
+        _ergebnisse.append({{"ok": False, "grund": type(_exc).__name__ + ": " + str(_exc)}})
+        continue
+
+    if "expected" in _fall:
+        _ok = _wert == _fall["expected"]
+        _grund = None if _ok else "erwartet " + repr(_fall["expected"]) + ", erhalten " + repr(_wert)
+    elif "expected_type" in _fall:
+        _ok = type(_wert).__name__ == _fall["expected_type"]
+        _grund = None if _ok else "erwartet Typ " + _fall["expected_type"] + ", erhalten " + type(_wert).__name__
+    else:
+        _ok, _grund = False, "Testfall nennt weder 'expected' noch 'expected_type'"
+
+    _ergebnisse.append({{"ok": _ok, "grund": _grund}})
+
+print({self._ERGEBNIS_MARKER!r} + json.dumps({{"results": _ergebnisse}}))
+"""
+
+        with tempfile.TemporaryDirectory() as verzeichnis:
+            pfad = os.path.join(verzeichnis, "loesung.py")
+            with open(pfad, "w", encoding="utf-8") as datei:
+                datei.write(harness)
+
+            try:
+                lauf = subprocess.run(
+                    [sys.executable, "-I", pfad, json.dumps(test_cases)],
+                    capture_output=True,
+                    text=True,
+                    timeout=self.AUSFUEHRUNGS_TIMEOUT_SEKUNDEN,
+                    cwd=verzeichnis,
+                )
+            except subprocess.TimeoutExpired:
+                return {
+                    "error": (
+                        f"Der Code lief länger als {self.AUSFUEHRUNGS_TIMEOUT_SEKUNDEN} "
+                        "Sekunden und wurde abgebrochen — vermutlich eine Endlosschleife."
+                    )
+                }
+
+        zeile = next(
+            (z for z in lauf.stdout.splitlines() if z.startswith(self._ERGEBNIS_MARKER)),
+            None,
+        )
+        if zeile is None:
+            fehler = (lauf.stderr or "").strip().splitlines()
+            return {"error": f"Fehler beim Ausführen des Codes: {fehler[-1] if fehler else 'unbekannt'}"}
+
+        nutzlast = json.loads(zeile[len(self._ERGEBNIS_MARKER):])
+        if "error" in nutzlast:
+            return nutzlast
+
+        ergebnisse = nutzlast["results"]
+        return {
+            "passed": sum(1 for e in ergebnisse if e["ok"]),
+            "failures": [e["grund"] for e in ergebnisse if not e["ok"]],
+        }
     
     def get_progress_summary(self) -> Dict[str, Any]:
         """Gibt eine Zusammenfassung des Fortschritts zurück"""
@@ -500,18 +607,18 @@ print(f"Person: {person}")
         """Zeigt den aktuellen Fortschritt an"""
         progress = self.get_progress_summary()
         
- print("\n Lernfortschritt")
+        print("\n Lernfortschritt")
         print("="*50)
- print(f" Module: {progress['completed_modules']}/{progress['total_modules']} ({progress['module_progress']}%)")
- print(f"️ Übungen: {progress['completed_exercises']}/{progress['total_exercises']} ({progress['exercise_progress']}%)")
- print(f" Gesamtpunkte: {progress['total_points']}")
+        print(f" Module: {progress['completed_modules']}/{progress['total_modules']} ({progress['module_progress']}%)")
+        print(f"️ Übungen: {progress['completed_exercises']}/{progress['total_exercises']} ({progress['exercise_progress']}%)")
+        print(f" Gesamtpunkte: {progress['total_points']}")
         print(f"⏱️ Session-Dauer: {progress['session_duration']}")
         
         # Fortschrittsbalken
- print(f"\n Module-Fortschritt:")
+        print(f"\n Module-Fortschritt:")
         self._display_progress_bar(progress['module_progress'])
         
- print(f"\n️ Übungs-Fortschritt:")
+        print(f"\n️ Übungs-Fortschritt:")
         self._display_progress_bar(progress['exercise_progress'])
     
     def _display_progress_bar(self, percentage: float) -> None:
@@ -524,14 +631,14 @@ print(f"Person: {person}")
     @contextmanager
     def interactive_session(self):
         """Context Manager für interaktive Lernsession"""
- print("Python Learning Environment gestartet!")
+        print("Python Learning Environment gestartet!")
         print("="*50)
         
         try:
             yield self
         finally:
             self.save_progress()
- print("\n Session beendet. Fortschritt gespeichert!")
+            print("\n Session beendet. Fortschritt gespeichert!")
     
     async def run_async_example(self, delay: float = 1.0) -> str:
         """Beispiel für asynchrone Programmierung"""
@@ -544,7 +651,7 @@ def main():
     
     with env.interactive_session():
         # Zeige verfügbare Module
- print("\n Verfügbare Lernmodule:")
+        print("\n Verfügbare Lernmodule:")
         for module in env.get_available_modules():
             print(f"  - {module.id}: {module.title} ({module.difficulty.value})")
         
